@@ -8,7 +8,7 @@ _C = CN()
 _C.MODEL = CN()
 _C.MODEL.NAME = 'ResNet50'
 _C.MODEL.LAST_STRIDE = 2
-_C.MODEL.POOL = "GAP"
+_C.MODEL.POOL = "AVG"
 
 # -----------------------------------------------------------------------------
 # INPUT

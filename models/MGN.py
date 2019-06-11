@@ -38,9 +38,9 @@ class MGN(BasicModule):
         self.p2 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
         self.p3 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
 
-        if pool == 'GMP':
+        if pool == 'MAX':
             pool2d = nn.MaxPool2d
-        elif pool == 'GAP':
+        elif pool == 'AVG':
             pool2d = nn.AvgPool2d
         else:
             raise Exception()

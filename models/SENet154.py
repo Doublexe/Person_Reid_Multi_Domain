@@ -32,12 +32,12 @@ class SENet154(BasicModule):
         super(SENet154, self).__init__()
         self.model_name = 'SENet154'
         self.base = senet154(pretrained=True, last_stride=last_stride)
-        if pooling == 'GAP':
+        if pooling == 'AVG':
             self.gap = nn.AdaptiveAvgPool2d(1)
-        elif pooling == 'GMP':
+        elif pooling == 'MAX':
             self.gap = nn.AdaptiveMaxPool2d(1)
         else:
-            raise Exception('The POOL value should be GAP or GMP')
+            raise Exception('The POOL value should be AVG or MAX')
         self.num_classes = num_classes
 
         self.bottleneck = nn.BatchNorm1d(self.in_planes)
