@@ -1,5 +1,7 @@
 MODEL:
   NAME: 'MGN'
+  POOL: 'MAX'
+  LAST_STRIDE: 2
 
 INPUT:
   SIZE_TRAIN: [384, 128]
@@ -10,6 +12,7 @@ INPUT:
 DATASETS:
   NAMES: ('Market1501')
   STORE_DIR: '/Users/linshan/Pictures/Person_ReID_Datasets'
+  # STORE_DIR: '../mfsNetwork/Datasets'
 
 DATALOADER:
   SAMPLER: 'MGN'
@@ -39,5 +42,6 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 256
 
-OUTPUT_DIR: "./checkpoint/Market1501/MGN_TripletSoftmax_S1_BS64"
+OUTPUT_DIR: "./checkpoint/Market1501/Market_MGN_SoftmaxTriplet_S1_BS64"
 DEVICE: "cpu"
+# DEVICE: "cuda:1"

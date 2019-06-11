@@ -28,12 +28,16 @@ def weights_init_classifier(m):
         
 class SE_ResNext50_32x4d(BasicModule):
     in_planes = 2048
-    def __init__(self, num_classes, last_stride):
+    def __init__(self, num_classes, last_stride, pool):
         super(SE_ResNext50_32x4d, self).__init__()
         self.model_name = 'SE_ResNext50_32x4d'
         self.base = se_resnext50_32x4d(pretrained=True, last_stride=last_stride)
-        self.gap = nn.AdaptiveAvgPool2d(1)
-        # self.gap = nn.AdaptiveMaxPool2d(1)
+        if pooling == 'AVG':
+            self.gap = nn.AdaptiveAvgPool2d(1)
+        elif pooling == 'MAX':
+            self.gap = nn.AdaptiveMaxPool2d(1)
+        else:
+            raise Exception('The POOL value should be AVG or MAX')
         self.num_classes = num_classes
 
         self.bottleneck = nn.BatchNorm1d(self.in_planes)
