@@ -28,12 +28,16 @@ def weights_init_classifier(m):
         
 class ResNet50(BasicModule):
     in_planes = 2048
-    def __init__(self, num_classes, last_stride):
+    def __init__(self, num_classes, last_stride, pooling):
         super(ResNet50, self).__init__()
         self.model_name = 'ResNet50'
         self.base = resnet50(pretrained=True, last_stride=last_stride)
-        self.gap = nn.AdaptiveAvgPool2d(1)
-        # self.gap = nn.AdaptiveMaxPool2d(1)
+        if pooling == 'GAP':
+            self.gap = nn.AdaptiveAvgPool2d(1)
+        elif pooling == 'GMP':
+            self.gap = nn.AdaptiveMaxPool2d(1)
+        else:
+            raise Exception('The POOL value should be GAP or GMP')
         self.num_classes = num_classes
 
         self.bottleneck = nn.BatchNorm1d(self.in_planes)

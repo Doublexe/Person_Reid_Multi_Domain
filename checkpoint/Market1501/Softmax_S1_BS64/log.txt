@@ -1,6 +1,6 @@
-2019-05-29 15:13:32,725 Reid_Baseline INFO: Using 1 GPUS
-2019-05-29 15:13:32,725 Reid_Baseline INFO: Loaded configuration file ./config/market_softmax.yaml
-2019-05-29 15:13:32,726 Reid_Baseline INFO: Running with config:
+2019-06-11 14:14:05,606 Reid_Baseline INFO: Using 1 GPUS
+2019-06-11 14:14:05,607 Reid_Baseline INFO: Loaded configuration file ./config/mac_market_softmax.yaml
+2019-06-11 14:14:05,607 Reid_Baseline INFO: Running with config:
 DATALOADER:
   NUM_INSTANCE: 32
   NUM_WORKERS: 8
@@ -22,7 +22,8 @@ INPUT:
   SIZE_TRAIN: [384, 128]
 MODEL:
   LAST_STRIDE: 2
-  NAME: ResNet50
+  NAME: ResNet18
+  POOL: GAP
 OUTPUT_DIR: ./checkpoint/Market1501/Softmax_S1_BS64
 RE_RANKING: False
 SOLVER:
@@ -47,4 +48,3 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 256
   LOAD_EPOCH: 120
-2019-05-29 15:14:12,383 Reid_Baseline INFO: Start training
