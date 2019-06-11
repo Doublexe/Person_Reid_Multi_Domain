@@ -107,10 +107,10 @@ venv.bak/
 \datasets/Market1501/
 \datasets/DukeMTMC/
 \datasets/CUHK03/
-\datasets/NTUCampus/
 \datasets/MSMT17/
-\datasets/CUHK03/
 \.ipynb_checkpoints/
+
+\checkpoint\
 
 
 ._.DS_Store
@@ -125,3 +125,7 @@ nohup2.out
 .vscode/settings.json
 
 *.txt
+*.yaml
+!Sample_Market1501_ResNet50_Softmax.yaml
+!Sample_Market1501_MGN_SoftmaxTriplet.yaml
+

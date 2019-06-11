@@ -8,7 +8,7 @@ from .backbones.resnet import resnet50
         
 class MGN(BasicModule):
     feats = 256
-    def __init__(self, num_classes, last_stride):
+    def __init__(self, num_classes, last_stride, pool):
         super(MGN, self).__init__()
         self.model_name = 'MGN'
         self.download = models.resnet50(pretrained=True)
@@ -38,11 +38,18 @@ class MGN(BasicModule):
         self.p2 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
         self.p3 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
 
-        self.maxpool_zg_p1 = nn.MaxPool2d(kernel_size=(12, 4))
-        self.maxpool_zg_p2 = nn.MaxPool2d(kernel_size=(24, 8))
-        self.maxpool_zg_p3 = nn.MaxPool2d(kernel_size=(24, 8))
-        self.maxpool_zp2 = nn.MaxPool2d(kernel_size=(12, 8))
-        self.maxpool_zp3 = nn.MaxPool2d(kernel_size=(8, 8))
+        if pool == 'MAX':
+            pool2d = nn.MaxPool2d
+        elif pool == 'AVG':
+            pool2d = nn.AvgPool2d
+        else:
+            raise Exception()
+
+        self.maxpool_zg_p1 = pool2d(kernel_size=(12, 4))
+        self.maxpool_zg_p2 = pool2d(kernel_size=(24, 8))
+        self.maxpool_zg_p3 = pool2d(kernel_size=(24, 8))
+        self.maxpool_zp2 = pool2d(kernel_size=(12, 8))
+        self.maxpool_zp3 = pool2d(kernel_size=(8, 8))
 
         self.reduction = nn.Sequential(nn.Conv2d(2048, self.feats, 1, bias=False), nn.BatchNorm2d(self.feats), nn.ReLU())
 
