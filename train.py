@@ -78,7 +78,7 @@ def train(config_file, **kwargs):
 
             count = count + 1
             running_loss += loss.item()
-            if cfg.MODEL.NAME == 'MGN':
+            if cfg.MODEL.NAME == 'MGN' or cfg.MODEL.NAME == 'Paper_MGN':
                 running_acc += (scores[0].max(1)[1] == labels).float().mean().item()
             else:
                 running_acc += (scores.max(1)[1] == labels).float().mean().item()
