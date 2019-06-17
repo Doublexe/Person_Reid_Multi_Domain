@@ -53,6 +53,6 @@ class ResNet152(BasicModule):
         feat = self.bottleneck(global_feat)  # normalize for angular softmax
         if self.training:
             cls_score = self.classifier(feat)
-            return cls_score, global_feat  # global feature for triplet loss
+            return (cls_score,), (global_feat,)  # global feature for triplet loss
         else:
             return feat
