@@ -1,7 +1,7 @@
 MODEL:
-  NAME: 'MGN'
-  POOL: 'MAX'
-  LAST_STRIDE: 2
+  NAME: 'ResNet50'
+  POOL: 'AVG'
+  LAST_STRIDE: 1
 
 INPUT:
   SIZE_TRAIN: [384, 128]
@@ -19,8 +19,6 @@ DATALOADER:
 
 SOLVER:
   LOSS: 'softmax_triplet'
-  LAMBDA1: 2
-  LAMBDA2: 1
   OPTIMIZER_NAME: 'Adam'
   MAX_EPOCHS: 120
   BASE_LR: 0.00035
@@ -44,6 +42,6 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 256
 
-OUTPUT_DIR: "./checkpoint/Market1501/Market_MGN_SoftmaxTriplet_S1_BS64"
+OUTPUT_DIR: "./checkpoint/Market1501/Market_ResNet50_Softmax_S1_BS64"
 DEVICE: "cpu"
 # DEVICE: "cuda:1"
