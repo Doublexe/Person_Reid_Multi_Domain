@@ -15,10 +15,12 @@ DATASETS:
   # STORE_DIR: '../mfsNetwork/Datasets'
 
 DATALOADER:
-  SAMPLER: 'MGN'
   NUM_WORKERS: 8
 
 SOLVER:
+  LOSS: 'softmax_triplet'
+  LAMBDA1: 2
+  LAMBDA2: 1
   OPTIMIZER_NAME: 'Adam'
   MAX_EPOCHS: 120
   BASE_LR: 0.00035
