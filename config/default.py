@@ -52,8 +52,6 @@ _C.DATASETS.STORE_DIR = '../mfsNetwork/Datasets'
 _C.DATALOADER = CN()
 # Number of data loading threads
 _C.DATALOADER.NUM_WORKERS = 4
-# Sampler for data loading
-_C.DATALOADER.SAMPLER = 'softmax'
 # Number of instance for one batch
 _C.DATALOADER.NUM_INSTANCE = 32
 
@@ -61,6 +59,11 @@ _C.DATALOADER.NUM_INSTANCE = 32
 # Solver
 # ---------------------------------------------------------------------------- #
 _C.SOLVER = CN()
+# Sampler for data loading
+_C.SOLVER.LOSS = 'softmax'
+_C.SOLVER.LAMBDA1 = 1
+_C.SOLVER.LAMBDA2 = 1
+
 _C.SOLVER.OPTIMIZER_NAME = "Adam"
 
 _C.SOLVER.MAX_EPOCHS = 50
@@ -92,6 +95,9 @@ _C.SOLVER.EVAL_PERIOD = 50
 # see 2 images per batch
 _C.SOLVER.IMS_PER_BATCH = 64
 
+# ---------------------------------------------------------------------------- #
+# Test
+# ---------------------------------------------------------------------------- #
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
 _C.TEST = CN()

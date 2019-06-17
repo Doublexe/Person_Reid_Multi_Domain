@@ -14,7 +14,7 @@ def data_loader(cfg,dataset_name):
     dataset = init_dataset(cfg,dataset_name)
     num_classes = dataset.num_train_pids
     train_set = ImageDataset(dataset.train, train_transforms)
-    if cfg.DATALOADER.SAMPLER == 'softmax':
+    if cfg.SOLVER.LOSS == 'softmax':
         train_loader = DataLoader(
             train_set, batch_size=cfg.SOLVER.IMS_PER_BATCH, shuffle=True, num_workers=num_workers,
             collate_fn=train_collate_fn
