@@ -18,7 +18,7 @@ DATALOADER:
   NUM_WORKERS: 8
 
 SOLVER:
-  LOSS: 'softmax'
+  LOSS: 'softmax_triplet'
   OPTIMIZER_NAME: 'Adam'
   MAX_EPOCHS: 120
   BASE_LR: 0.00035

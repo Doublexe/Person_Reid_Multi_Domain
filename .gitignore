@@ -125,7 +125,3 @@ nohup2.out
 .vscode/settings.json
 
 *.txt
-*.yaml
-!Sample_Market1501_ResNet50_Softmax.yaml
-!Sample_Market1501_MGN_SoftmaxTriplet.yaml
-

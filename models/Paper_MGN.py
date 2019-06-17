@@ -6,11 +6,11 @@ from torchvision.models.resnet import Bottleneck
 from .BasicModule import BasicModule
 from .backbones.resnet import resnet50
         
-class MGN(BasicModule):
+class Paper_MGN(BasicModule):
     feats = 256
-    def __init__(self, num_classes, last_stride, pool):
-        super(MGN, self).__init__()
-        self.model_name = 'MGN'
+    def __init__(self, num_classes, last_stride):
+        super(Paper_MGN, self).__init__()
+        self.model_name = 'Paper_MGN'
         self.download = models.resnet50(pretrained=True)
         self.base = resnet50(pretrained=True, last_stride=last_stride)
         
@@ -38,27 +38,19 @@ class MGN(BasicModule):
         self.p2 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
         self.p3 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
 
-        if pool == 'MAX':
-            pool2d = nn.MaxPool2d
-        elif pool == 'AVG':
-            pool2d = nn.AvgPool2d
-        else:
-            raise Exception()
-
-        self.maxpool_zg_p1 = pool2d(kernel_size=(12, 4))
-        self.maxpool_zg_p2 = pool2d(kernel_size=(24, 8))
-        self.maxpool_zg_p3 = pool2d(kernel_size=(24, 8))
-        self.maxpool_zp2 = pool2d(kernel_size=(12, 8))
-        self.maxpool_zp3 = pool2d(kernel_size=(8, 8))
+        self.maxpool_zg_p1 = nn.MaxPool2d(kernel_size=(12, 4))
+        self.maxpool_zg_p2 = nn.MaxPool2d(kernel_size=(24, 8))
+        self.maxpool_zg_p3 = nn.MaxPool2d(kernel_size=(24, 8))
+        self.maxpool_zp2 = nn.MaxPool2d(kernel_size=(12, 8))
+        self.maxpool_zp3 = nn.MaxPool2d(kernel_size=(8, 8))
 
         self.reduction = nn.Sequential(nn.Conv2d(2048, self.feats, 1, bias=False), nn.BatchNorm2d(self.feats), nn.ReLU())
 
         self._init_reduction(self.reduction)
-#         self.reduction.apply(_init_reduction)
 
-        self.fc_id_2048_0 = nn.Linear(self.feats, num_classes)
-        self.fc_id_2048_1 = nn.Linear(self.feats, num_classes)
-        self.fc_id_2048_2 = nn.Linear(self.feats, num_classes)
+        self.fc_id_2048_0 = nn.Linear(2048, num_classes)
+        self.fc_id_2048_1 = nn.Linear(2048, num_classes)
+        self.fc_id_2048_2 = nn.Linear(2048, num_classes)
 
         self.fc_id_256_1_0 = nn.Linear(self.feats, num_classes)
         self.fc_id_256_1_1 = nn.Linear(self.feats, num_classes)
@@ -122,9 +114,9 @@ class MGN(BasicModule):
         f1_p3 = self.reduction(z1_p3).squeeze(dim=3).squeeze(dim=2)
         f2_p3 = self.reduction(z2_p3).squeeze(dim=3).squeeze(dim=2)
 
-        l_p1 = self.fc_id_2048_0(fg_p1)
-        l_p2 = self.fc_id_2048_1(fg_p2)
-        l_p3 = self.fc_id_2048_2(fg_p3)
+        l_p1 = self.fc_id_2048_0(zg_p1.squeeze(dim=3).squeeze(dim=2))
+        l_p2 = self.fc_id_2048_1(zg_p2.squeeze(dim=3).squeeze(dim=2))
+        l_p3 = self.fc_id_2048_2(zg_p3.squeeze(dim=3).squeeze(dim=2))
 
         l0_p2 = self.fc_id_256_1_0(f0_p2)
         l1_p2 = self.fc_id_256_1_1(f1_p2)
