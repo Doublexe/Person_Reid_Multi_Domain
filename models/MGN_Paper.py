@@ -38,15 +38,21 @@ class MGN_Paper(BasicModule):
         self.p1 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_g_conv5))
         self.p2 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
         self.p3 = nn.Sequential(copy.deepcopy(res_conv4), copy.deepcopy(res_p_conv5))
-
+        
+        if pool == 'MAX':
+            pool2d = nn.MaxPool2d
+        elif pool == 'AVG':
+            pool2d = nn.AvgPool2d
+        else:
+            raise Exception()
+        
         self.maxpool_zg_p1 = pool2d(kernel_size=(12, 4))
         self.maxpool_zg_p2 = pool2d(kernel_size=(24, 8))
         self.maxpool_zg_p3 = pool2d(kernel_size=(24, 8))
         self.maxpool_zp2 = pool2d(kernel_size=(12, 8))
         self.maxpool_zp3 = pool2d(kernel_size=(8, 8))
 
-        self.reduction = nn.Sequential(nn.Conv2d(2048, self.
-        , 1, bias=False), nn.BatchNorm2d(self.feats_256), nn.ReLU())
+        self.reduction = nn.Sequential(nn.Conv2d(2048, self.feats, 1, bias=False), nn.BatchNorm2d(self.feats_256), nn.ReLU())
 
         self._init_reduction(self.reduction)
 #         self.reduction.apply(_init_reduction)
