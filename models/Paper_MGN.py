@@ -124,11 +124,10 @@ class Paper_MGN(BasicModule):
         l1_p3 = self.fc_id_256_2_1(f1_p3)
         l2_p3 = self.fc_id_256_2_2(f2_p3)
 
-        feat = torch.cat([fg_p1, fg_p2, fg_p3, f0_p2, f1_p2, f0_p3, f1_p3, f2_p3], dim=1)
-
         if self.training:
             cls_score = l_p1, l_p2, l_p3, l0_p2, l1_p2, l0_p3, l1_p3, l2_p3
             global_feat = fg_p1, fg_p2, fg_p3
             return cls_score, global_feat  # global feature for triplet loss
         else:
+            feat = torch.cat([fg_p1, fg_p2, fg_p3, f0_p2, f1_p2, f0_p3, f1_p3, f2_p3], dim=1)
             return feat
