@@ -28,7 +28,7 @@ def weights_init_classifier(m):
         
 class ResNet18(BasicModule):
     in_planes = 2048
-    def __init__(self, num_classes, last_stride, pool):
+    def __init__(self, num_classes, last_stride, pooling):
         super(ResNet18, self).__init__()
         self.model_name = 'ResNet18'
         self.base = resnet18(pretrained=True, last_stride=last_stride)
