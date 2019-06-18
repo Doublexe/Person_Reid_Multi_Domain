@@ -126,4 +126,4 @@ nohup2.out
 
 *.txt
 *.yaml
-!config/Sample_Market1501_ResNet50_SoftmaxTriplet_SGD.yaml
+!config/Sample*
