@@ -50,7 +50,7 @@ def test_cross_dataset(config_file,test_dataset, **kwargs):
         
     device = torch.device(cfg.DEVICE)
     
-    model = getattr(models, cfg.MODEL.NAME)(num_classes, cfg.MODEL.LAST_STRIDE)
+    model = getattr(models, cfg.MODEL.NAME)(num_classes, cfg.MODEL.LAST_STRIDE, cfg.MODEL.POOL)
     model.load(cfg.OUTPUT_DIR,cfg.TEST.LOAD_EPOCH)
     model = model.eval()
     
