@@ -6,14 +6,17 @@ MODEL:
 INPUT:
   SIZE_TRAIN: [384, 128]
   SIZE_TEST: [384, 128]
-  PROB: 0.5 # random horizontal flip
+  HF_PROB: 0.5 # random horizontal flip
   PADDING: 10
+
+  RE: True # enable random erasing
+  RE_PROB: 0.5 # random erasing probability
 
 DATASETS:
   NAMES: ('Market1501')
+  STORE_DIR: './datasets'
   # STORE_DIR: '/Users/linshan/Pictures/Person_ReID_Datasets'
   # STORE_DIR: '../mfsNetwork/Datasets'
-  STORE_DIR: './datasets'
 
 DATALOADER:
   NUM_WORKERS: 8
