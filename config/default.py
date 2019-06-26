@@ -19,13 +19,18 @@ _C.INPUT.SIZE_TRAIN = [384, 128]
 # Size of the image during test
 _C.INPUT.SIZE_TEST = [384, 128]
 # Random probability for image horizontal flip
-_C.INPUT.PROB = 0.5
+_C.INPUT.HF_PROB = 0.5
 # Values to be used for image normalization
 _C.INPUT.PIXEL_MEAN = [0.485, 0.456, 0.406]
 # Values to be used for image normalization
 _C.INPUT.PIXEL_STD = [0.229, 0.224, 0.225]
 # Value of padding size
 _C.INPUT.PADDING = 10
+
+# Random probability for image random erasing
+_C.INPUT.RE = True
+# Random probability for image random erasing
+_C.INPUT.RE_PROB = 0.5
 
 # Value of colorjitter brightness
 _C.INPUT.BRIGHTNESS = 0.0
