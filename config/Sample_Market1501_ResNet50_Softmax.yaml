@@ -4,15 +4,14 @@ MODEL:
   LAST_STRIDE: 1
 
 INPUT:
-  SIZE_TRAIN: [384, 128]
-  SIZE_TEST: [384, 128]
+  SIZE_TRAIN: [256, 128]
+  SIZE_TEST: [256, 128]
   PROB: 0.5 # random horizontal flip
   PADDING: 10
 
 DATASETS:
   NAMES: ('Market1501')
-  STORE_DIR: '/Users/linshan/Pictures/Person_ReID_Datasets'
-  # STORE_DIR: '../mfsNetwork/Datasets'
+  STORE_DIR: './datasets'
 
 DATALOADER:
   NUM_WORKERS: 8
@@ -42,6 +41,6 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 256
 
-OUTPUT_DIR: "./checkpoint/Market1501/Market_ResNet50_Softmax_S1_BS64"
-DEVICE: "cpu"
-# DEVICE: "cuda:1"
+OUTPUT_DIR: "./checkpoint/Market1501/Market_ResNet50_Softmax_S1_BS64_RATIO_1_2_SGD"
+#DEVICE: "cpu"
+DEVICE: "cuda:1"
