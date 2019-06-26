@@ -27,7 +27,7 @@ def make_loss(cfg):
         def loss_func(scores, feats, labels):
             C_Loss = [F.cross_entropy(score, labels) for score in scores]
             C_Loss = sum(C_Loss) / len(C_Loss)
-            T_Loss = [imptriplet(feat, labels)[0] for feat in feats]
+            T_Loss = [triplet(feat, labels)[0] for feat in feats]
             T_Loss = sum(T_Loss) / len(T_Loss)
             return lamba1 * C_Loss + lamba2 * T_Loss
     elif loss_selector == 'softmax_imptriplet':

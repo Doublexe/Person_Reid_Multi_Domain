@@ -1,0 +1,43 @@
+MODEL:
+  NAME: 'ResNet50'
+  POOL: 'AVG'
+  LAST_STRIDE: 1
+
+INPUT:
+  SIZE_TRAIN: [384, 128]
+  SIZE_TEST: [384, 128]
+  PROB: 0.5 # random horizontal flip
+  PADDING: 10
+
+DATASETS:
+  NAMES: ('Market1501')
+  # STORE_DIR: '/Users/linshan/Pictures/Person_ReID_Datasets'
+  # STORE_DIR: '../mfsNetwork/Datasets'
+  STORE_DIR: './datasets'
+
+DATALOADER:
+  NUM_WORKERS: 8
+
+SOLVER:
+  LOSS: 'softmax_triplet'
+  OPTIMIZER_NAME: 'SGD'
+  MAX_EPOCHS: 50
+  BASE_LR: 0.01
+
+  IMS_PER_BATCH: 32
+
+  STEP: 40
+  GAMMA: 0.1
+
+  WARMUP: False
+
+  CHECKPOINT_PERIOD: 10
+  EVAL_PERIOD: 10
+
+TEST:
+  LOAD_EPOCH: 50
+  IMS_PER_BATCH: 65
+
+OUTPUT_DIR: "./checkpoint/Market1501/Market_ResNet50_Softmax_S1_BS64_SGD"
+# DEVICE: "cpu"
+DEVICE: "cuda:1"

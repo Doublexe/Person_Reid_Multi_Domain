@@ -28,7 +28,7 @@ def weights_init_classifier(m):
         
 class SE_ResNext50_32x4d(BasicModule):
     in_planes = 2048
-    def __init__(self, num_classes, last_stride, pool):
+    def __init__(self, num_classes, last_stride, pooling):
         super(SE_ResNext50_32x4d, self).__init__()
         self.model_name = 'SE_ResNext50_32x4d'
         self.base = se_resnext50_32x4d(pretrained=True, last_stride=last_stride)
