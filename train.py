@@ -50,7 +50,7 @@ def train(config_file, **kwargs):
     train_loader, val_loader, num_query, num_classes = data_loader(cfg,cfg.DATASETS.NAMES)
 
     
-    model = getattr(models, cfg.MODEL.NAME)(num_classes, cfg.MODEL.LAST_STRIDE)
+    model = getattr(models, cfg.MODEL.NAME)(num_classes, cfg.MODEL.LAST_STRIDE, cfg.MODEL.POOL)
     optimizer = make_optimizer(cfg, model)
     scheduler = make_scheduler(cfg,optimizer)
     loss_fn = make_loss(cfg)
@@ -78,7 +78,7 @@ def train(config_file, **kwargs):
 
             count = count + 1
             running_loss += loss.item()
-            running_acc += (scores.max(1)[1] == labels).float().mean().item()
+            running_acc += (scores[0].max(1)[1] == labels).float().mean().item()
 
             
         logger.info("Epoch[{}] Iteration[{}/{}] Loss: {:.3f}, Acc: {:.3f}, Base Lr: {:.2e}"

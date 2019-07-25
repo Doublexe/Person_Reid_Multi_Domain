@@ -38,7 +38,7 @@ Currently support:
 | ResNet50 | SE_ResNet101 |
 | ResNet101 | SE_ResNet152 |
 | ResNet152 | SE_ResNext50_32x4d |
-| --- | SE_ResNext101_32x4d |
+| MGN(ResNet50) | SE_ResNext101_32x4d |
 
 ## Training:
 * As the last feature maps increase. Batch Size 128 will use more than 12G
@@ -53,19 +53,19 @@ python train.py ./config/market_softmax.yaml --DEVICE=cuda:5
 ## Testing:
 ``` bash
 ### No Re-Ranking
-python test.py ./config/market_softmax.yaml
+python test.py ./config/Sample_Market1501_ResNet50_Softmax.yaml
 
 ### Change GPU
-python test.py ./config/market_softmax.yaml --DEVICE=cuda:5
+python test.py ./config/Sample_Market1501_MGN_SoftmaxTriplet.yaml --DEVICE=cuda:5
 
 ### With Re-Ranking
-python test.py ./config/market_softmax.yaml --RE_RANKING=True
+python test.py ./config/Sample_Market1501_MGN_SoftmaxTriplet.yaml --RE_RANKING=True
 ```
 
 ## Testing Cross Dataset:
 ``` bash
 ### Market1501 -> DukeMTMC
-python test_cross_dataset.py ./config/market_softmax.yaml DukeMTMC
+python test_cross_dataset.py ./config/Sample_Market1501_MGN_SoftmaxTriplet.yaml DukeMTMC
 ```
 
 ## Results Compare with [Person ReID Baseline](https://github.com/LinShanify/Person_ReID_Baseline)

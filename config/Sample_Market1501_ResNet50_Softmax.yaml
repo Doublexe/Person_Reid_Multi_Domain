@@ -1,22 +1,28 @@
 MODEL:
   NAME: 'ResNet50'
+  POOL: 'AVG'
+  LAST_STRIDE: 1
 
 INPUT:
   SIZE_TRAIN: [256, 128]
   SIZE_TEST: [256, 128]
-  PROB: 0.5 # random horizontal flip
+  HF_PROB: 0.5 # random horizontal flip
   PADDING: 10
+
+  RE: True # enable random erasing
+  RE_PROB: 0.5 # random erasing probability
 
 DATASETS:
   NAMES: ('Market1501')
-  STORE_DIR: '../mfsNetwork/Datasets'
-
+  STORE_DIR: './datasets'
+  # STORE_DIR: '/Users/linshan/Pictures/Person_ReID_Datasets'
+  # STORE_DIR: '../mfsNetwork/Datasets'
 DATALOADER:
-  SAMPLER: 'softmax'
   NUM_WORKERS: 8
 
 SOLVER:
-  OPTIMIZER_NAME: 'SGD'
+  LOSS: 'softmax'
+  OPTIMIZER_NAME: 'Adam'
   MAX_EPOCHS: 120
   BASE_LR: 0.00035
   BIAS_LR_FACTOR: 1
@@ -39,5 +45,6 @@ SOLVER:
 TEST:
   IMS_PER_BATCH: 256
 
-OUTPUT_DIR: "./checkpoint/Market1501/Softmax_S1_BS64_MEAN_STD_0.5_RATIO_2_1_SGD"
-DEVICE: "cuda:4"
+OUTPUT_DIR: "./checkpoint/Market1501/Market_ResNet50_Softmax_S1_BS64_RATIO_1_2_SGD"
+#DEVICE: "cpu"
+DEVICE: "cuda:1"

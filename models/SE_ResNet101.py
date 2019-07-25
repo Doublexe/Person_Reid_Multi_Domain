@@ -28,12 +28,16 @@ def weights_init_classifier(m):
         
 class SE_ResNet101(BasicModule):
     in_planes = 2048
-    def __init__(self, num_classes, last_stride):
+    def __init__(self, num_classes, last_stride, pooling):
         super(SE_ResNet101, self).__init__()
         self.model_name = 'SE_ResNet101'
         self.base = se_resnet101(pretrained=True, last_stride=last_stride)
-        self.gap = nn.AdaptiveAvgPool2d(1)
-        # self.gap = nn.AdaptiveMaxPool2d(1)
+        if pooling == 'AVG':
+            self.gap = nn.AdaptiveAvgPool2d(1)
+        elif pooling == 'MAX':
+            self.gap = nn.AdaptiveMaxPool2d(1)
+        else:
+            raise Exception('The POOL value should be AVG or MAX')
         self.num_classes = num_classes
 
         self.bottleneck = nn.BatchNorm1d(self.in_planes)
@@ -49,6 +53,6 @@ class SE_ResNet101(BasicModule):
         feat = self.bottleneck(global_feat)  # normalize for angular softmax
         if self.training:
             cls_score = self.classifier(feat)
-            return cls_score, global_feat  # global feature for triplet loss
+            return (cls_score,), (global_feat,)  # global feature for triplet loss
         else:
             return feat

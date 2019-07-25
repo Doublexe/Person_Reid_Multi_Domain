@@ -107,10 +107,10 @@ venv.bak/
 \datasets/Market1501/
 \datasets/DukeMTMC/
 \datasets/CUHK03/
-\datasets/NTUCampus/
 \datasets/MSMT17/
-\datasets/CUHK03/
 \.ipynb_checkpoints/
+
+\checkpoint\
 
 
 ._.DS_Store
@@ -121,10 +121,9 @@ auto3.sh
 auto2.sh
 nohup2.out
 
-ResNet50_epo120.pth
-ResNet50_epo100.pth
-ResNet50_epo80.pth
-ResNet50_epo60.pth
-ResNet50_epo40.pth
-ResNet50_epo20.pth
+*.pth
 .vscode/settings.json
+
+*.txt
+*.yaml
+!config/Sample*
