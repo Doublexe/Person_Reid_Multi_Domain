@@ -1,0 +1,55 @@
+2019-06-25 04:09:19,831 Reid_Baseline INFO: Using 1 GPUS
+2019-06-25 04:09:19,831 Reid_Baseline INFO: Loaded configuration file ./config/ubuntu_market_softmax.yaml
+2019-06-25 04:09:19,831 Reid_Baseline INFO: Running with config:
+DATALOADER:
+  NUM_INSTANCE: 32
+  NUM_WORKERS: 8
+  SAMPLER: softmax
+DATASETS:
+  NAMES: Market1501
+  STORE_DIR: ../mfsNetwork/Datasets
+DEVICE: cuda:4
+INPUT:
+  BRIGHTNESS: 0.0
+  CONTRAST: 0.0
+  HUE: 0.0
+  PADDING: 10
+  PIXEL_MEAN: [0.5, 0.5, 0.5]
+  PIXEL_STD: [0.5, 0.5, 0.5]
+  PROB: 0.5
+  SATURATION: 0.0
+  SIZE_TEST: [256, 128]
+  SIZE_TRAIN: [256, 128]
+MODEL:
+  LAST_STRIDE: 2
+  NAME: ResNet50
+OUTPUT_DIR: ./checkpoint/Market1501/Softmax_S1_BS64_MEAN_STD_0.5_RATIO_2_1_SGD
+RE_RANKING: False
+SOLVER:
+  BASE_LR: 0.00035
+  BIAS_LR_FACTOR: 1
+  CHECKPOINT_PERIOD: 20
+  EVAL_PERIOD: 20
+  GAMMA: 0.1
+  IMS_PER_BATCH: 64
+  MARGIN: 0.3
+  MAX_EPOCHS: 120
+  MOMENTUM: 0.9
+  OPTIMIZER_NAME: SGD
+  STEP: 40
+  WARMUP: True
+  WARMUP_FACTOR: 0.01
+  WARMUP_ITERS: 10
+  WARMUP_METHOD: linear
+  WARMUP_STEPS: [40, 70]
+  WEIGHT_DECAY: 0.0005
+  WEIGHT_DECAY_BIAS: 0.0005
+TEST:
+  IMS_PER_BATCH: 256
+  LOAD_EPOCH: 120
+2019-06-25 04:09:22,823 Reid_Baseline INFO: Start training
+2019-06-25 04:11:03,808 Reid_Baseline INFO: Epoch[1] Iteration[203/203] Loss: 6.622, Acc: 0.001, Base Lr: -3.12e-05
+2019-06-25 04:12:40,904 Reid_Baseline INFO: Epoch[2] Iteration[203/203] Loss: 6.620, Acc: 0.001, Base Lr: 3.50e-06
+2019-06-25 04:14:18,171 Reid_Baseline INFO: Epoch[3] Iteration[203/203] Loss: 6.608, Acc: 0.006, Base Lr: 3.82e-05
+2019-06-25 04:15:54,511 Reid_Baseline INFO: Epoch[4] Iteration[203/203] Loss: 6.575, Acc: 0.043, Base Lr: 7.28e-05
+2019-06-25 04:17:31,897 Reid_Baseline INFO: Epoch[5] Iteration[203/203] Loss: 6.514, Acc: 0.093, Base Lr: 1.07e-04
