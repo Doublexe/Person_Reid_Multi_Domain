@@ -4,6 +4,7 @@ from .market1501 import Market1501
 from .dukemtmc import DukeMTMC
 from .msmt17 import MSMT17
 #from .ntucampus import NTUCampus
+from .ntuindoor import NTUIndoor
 from .ImageDataset import ImageDataset
 
 __factory = {
@@ -11,6 +12,7 @@ __factory = {
     'Market1501': Market1501,
     'DukeMTMC': DukeMTMC,
     'MSMT17': MSMT17,
+    'NTUIndoor': NTUIndoor,
 }
 
 
