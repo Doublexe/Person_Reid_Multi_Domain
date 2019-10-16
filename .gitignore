@@ -104,6 +104,7 @@ venv.bak/
 .mypy_cache/
 
 \.DS_Store
+datasets/
 datasets/Market1501/
 datasets/DukeMTMC/
 datasets/CUHK03/

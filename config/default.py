@@ -48,10 +48,14 @@ _C.INPUT.HUE = 0.0
 # -----------------------------------------------------------------------------
 _C.DATASETS = CN()
 # List of the dataset names for training, as present in paths_catalog.py
-_C.DATASETS.NAMES = ('Market1501')
+_C.DATASETS.SOURCE = ('Market1501','DukeMTMC')
+# List of the dataset names for testing, as present in paths_catalog.py
+_C.DATASETS.TARGET = ('Market1501','DukeMTMC')
+# Merge the train, query, gallery into a big training set
+_C.DATASETS.MERGE = True
 # Setup storage directroy for dataset
 # _C.DATASETS.STORE_DIR = ('./datasets')
-_C.DATASETS.STORE_DIR = '../mfsNetwork/Datasets'
+_C.DATASETS.STORE_DIR = '/home/localstorage/Datasets'
 
 # -----------------------------------------------------------------------------
 # DataLoader

@@ -25,7 +25,14 @@ def weights_init_classifier(m):
         nn.init.normal_(m.weight, std=0.001)
         if m.bias:
             nn.init.constant_(m.bias, 0.0)
-        
+
+def wavg(feat_map):
+    batch = feat_map.shape[0]
+    channel = feat_map.shape[1]
+
+    return ((feat_map**2).view(batch, channel, -1) / (1e-12 + feat_map.view(batch, channel, -1).sum(-1, keepdim=True))).sum(-1)
+
+
 class ResNet50(BasicModule):
     in_planes = 2048
     def __init__(self, num_classes, last_stride, pooling):
@@ -33,11 +40,13 @@ class ResNet50(BasicModule):
         self.model_name = 'ResNet50'
         self.base = resnet50(pretrained=True, last_stride=last_stride)
         if pooling == 'AVG':
-            self.gap = nn.AdaptiveAvgPool2d(1)
+            self.pool = nn.AdaptiveAvgPool2d(1)
         elif pooling == 'MAX':
-            self.gap = nn.AdaptiveMaxPool2d(1)
+            self.pool = nn.AdaptiveMaxPool2d(1)
+        elif pooling == 'WAVG':
+            self.pool = wavg
         else:
-            raise Exception('The POOL value should be AVG or MAX')
+            raise Exception('The POOL value should be AVG or MAX or WAVG')
         self.num_classes = num_classes
 
         self.bottleneck = nn.BatchNorm1d(self.in_planes)
@@ -48,7 +57,7 @@ class ResNet50(BasicModule):
         self.classifier.apply(weights_init_classifier)
 
     def forward(self, x):
-        global_feat = self.gap(self.base(x))  # (b, 2048, 1, 1)
+        global_feat = self.pool(self.base(x))  # (b, 2048, 1, 1)
         global_feat = global_feat.view(global_feat.shape[0], -1)  # flatten to (bs, 2048)
         feat = self.bottleneck(global_feat)  # normalize for angular softmax
         if self.training:

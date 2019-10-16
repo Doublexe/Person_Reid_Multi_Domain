@@ -1,10 +1,8 @@
 import fire
-import fire
 import os
 import time
 import torch
 import numpy as np
-from torch.autograd import Variable
 import models
 from config import cfg
 from data_loader import data_loader
@@ -15,7 +13,7 @@ from logger import make_logger
 from evaluation import evaluation
 from datasets import PersonReID_Dataset_Downloader
 from utils import check_jupyter_run
-if  check_jupyter_run():
+if check_jupyter_run():
     from tqdm import tqdm_notebook as tqdm
 else:
     from tqdm import tqdm
@@ -29,27 +27,28 @@ def train(config_file, **kwargs):
             opts.append(v)
         cfg.merge_from_list(opts)
     cfg.freeze()
-    
-    PersonReID_Dataset_Downloader(cfg.DATASETS.STORE_DIR,cfg.DATASETS.NAMES)
-    
+
+    # [PersonReID_Dataset_Downloader(cfg.DATASETS.STORE_DIR,dataset) for dataset in cfg.DATASETS.SOURCE]
+    # [PersonReID_Dataset_Downloader(cfg.DATASETS.STORE_DIR,dataset) for dataset in cfg.DATASETS.TARGET]
     output_dir = cfg.OUTPUT_DIR
     if output_dir and not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-    
+        os.makedirs(output_dir)
+
     logger = make_logger("Reid_Baseline", output_dir,'log')
     logger.info("Using {} GPUS".format(1))
     logger.info("Loaded configuration file {}".format(config_file))
     logger.info("Running with config:\n{}".format(cfg))
-    
+
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
     eval_period = cfg.SOLVER.EVAL_PERIOD
     output_dir = cfg.OUTPUT_DIR
     device = torch.device(cfg.DEVICE)
     epochs = cfg.SOLVER.MAX_EPOCHS
-     
-    train_loader, val_loader, num_query, num_classes = data_loader(cfg,cfg.DATASETS.NAMES)
 
-    
+    train_loader, _, _, num_classes = data_loader(cfg,cfg.DATASETS.SOURCE, merge=cfg.DATASETS.MERGE)
+    # _, val_loader, num_query, _ = data_loader(cfg,cfg.DATASETS.TARGET,merge=False)
+    val_stats = [data_loader(cfg,(target,),merge=False)[1:3] for target in cfg.DATASETS.TARGET]
+
     model = getattr(models, cfg.MODEL.NAME)(num_classes, cfg.MODEL.LAST_STRIDE, cfg.MODEL.POOL)
     optimizer = make_optimizer(cfg, model)
     scheduler = make_scheduler(cfg,optimizer)
@@ -63,10 +62,10 @@ def train(config_file, **kwargs):
         running_acc = 0
         for data in tqdm(train_loader, desc='Iteration', leave=False):
             model.train()
-            images, labels = data
+            images, labels, domains = data
             if device:
                 model.to(device)
-                images, labels = images.to(device), labels.to(device)
+                images, labels, domains = images.to(device), labels.to(device), domains.to(device)
 
             optimizer.zero_grad()
 
@@ -80,7 +79,7 @@ def train(config_file, **kwargs):
             running_loss += loss.item()
             running_acc += (scores[0].max(1)[1] == labels).float().mean().item()
 
-            
+
         logger.info("Epoch[{}] Iteration[{}/{}] Loss: {:.3f}, Acc: {:.3f}, Base Lr: {:.2e}"
                                     .format(epoch+1, count, len(train_loader),
                                     running_loss/count, running_acc/count,
@@ -93,28 +92,29 @@ def train(config_file, **kwargs):
 
         # Validation
         if (epoch+1) % eval_period == 0:
-            all_feats = []
-            all_pids = []
-            all_camids = []
-            for data in tqdm(val_loader, desc='Feature Extraction', leave=False):
-                model.eval()
-                with torch.no_grad():
-                    images, pids, camids = data
-                    if device:
-                        model.to(device)
-                        images = images.to(device)
+            for i, (val_loader, num_query) in enumerate(val_stats):
+                all_feats = []
+                all_pids = []
+                all_camids = []
+                for data in tqdm(val_loader, desc='Feature Extraction', leave=False):
+                    model.eval()
+                    with torch.no_grad():
+                        images, pids, camids = data
+                        if device:
+                            model.to(device)
+                            images = images.to(device)
 
-                    feats = model(images)
+                        feats = model(images)
 
-                all_feats.append(feats)
-                all_pids.extend(np.asarray(pids))
-                all_camids.extend(np.asarray(camids))
+                    all_feats.append(feats)
+                    all_pids.extend(np.asarray(pids))
+                    all_camids.extend(np.asarray(camids))
 
-            cmc, mAP = evaluation(all_feats,all_pids,all_camids,num_query)
-            logger.info("Validation Results - Epoch: {}".format(epoch+1))
-            logger.info("mAP: {:.1%}".format(mAP))
-            for r in [1, 5, 10]:
-                logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
+                cmc, mAP = evaluation(all_feats,all_pids,all_camids,num_query)
+                logger.info("Validation Results: {} - Epoch: {}".format(cfg.DATASETS.TARGET[i], epoch+1))
+                logger.info("mAP: {:.1%}".format(mAP))
+                for r in [1, 5, 10]:
+                    logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
 
 
     time_elapsed = time.time() - since

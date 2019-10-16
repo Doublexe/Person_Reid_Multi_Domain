@@ -6,14 +6,15 @@ from .samplers import RandomIdentitySampler
 import os.path as osp
 from PIL import Image
 from torch.utils.data import Dataset
+from utils import get_dataset_name
 
-def data_loader(cfg,dataset_name):
+def data_loader(cfg,dataset_names,merge):
     train_transforms = transforms(cfg, is_train=True)
     val_transforms = transforms(cfg, is_train=False)
     num_workers = cfg.DATALOADER.NUM_WORKERS
-    dataset = init_dataset(cfg,dataset_name)
+    dataset = init_dataset(cfg, dataset_names,merge)
     num_classes = dataset.num_train_pids
-    train_set = ImageDataset(dataset.train, train_transforms)
+    train_set = ImageDataset(dataset_names, dataset.train, train_transforms)
     if cfg.SOLVER.LOSS == 'softmax':
         train_loader = DataLoader(
             train_set, batch_size=cfg.SOLVER.IMS_PER_BATCH, shuffle=True, num_workers=num_workers,
@@ -26,7 +27,7 @@ def data_loader(cfg,dataset_name):
             num_workers=num_workers, collate_fn=train_collate_fn
         )
 
-    val_set = ImageDataset(dataset.query + dataset.gallery, val_transforms)
+    val_set = ImageDataset(dataset_names, dataset.query + dataset.gallery, val_transforms)
     val_loader = DataLoader(
         val_set, batch_size=cfg.TEST.IMS_PER_BATCH, shuffle=False, num_workers=num_workers,
         collate_fn=val_collate_fn
@@ -53,9 +54,10 @@ def read_image(img_path):
 class ImageDataset(Dataset):
     """Image Person ReID Dataset"""
 
-    def __init__(self, dataset, transform=None):
+    def __init__(self, dataset_names, dataset, transform=None):
         self.dataset = dataset
         self.transform = transform
+        self.dataset_names = dataset_names
 
     def __len__(self):
         return len(self.dataset)
@@ -63,17 +65,21 @@ class ImageDataset(Dataset):
     def __getitem__(self, index):
         img_path, pid, camid = self.dataset[index]
         img = read_image(img_path)
+        domain = get_dataset_name(img_path)
+        did = self.dataset_names.index(domain)
 
         if self.transform is not None:
             img = self.transform(img)
 
-        return img, pid, camid, img_path
+        return img, pid, camid, img_path, did
 
 def train_collate_fn(batch):
-    imgs, pids, _, _, = zip(*batch)
+    imgs, pids, _, _, dids = zip(*batch)
     pids = torch.tensor(pids, dtype=torch.int64)
-    return torch.stack(imgs, dim=0), pids
+    dids = torch.tensor(dids, dtype=torch.int64)
+    return torch.stack(imgs, dim=0), pids, dids
 
 def val_collate_fn(batch):
-    imgs, pids, camids, _ = zip(*batch)
+    imgs, pids, camids, _, _ = zip(*batch)
+    # dids = torch.tensor(dids, dtype=torch.int64)
     return torch.stack(imgs, dim=0), pids, camids

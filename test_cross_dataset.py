@@ -20,7 +20,7 @@ if check_jupyter_run():
 else:
     from tqdm import tqdm
 
-    
+
 def test_cross_dataset(config_file,test_dataset, **kwargs):
     cfg.merge_from_file(config_file)
     if kwargs:
@@ -30,34 +30,34 @@ def test_cross_dataset(config_file,test_dataset, **kwargs):
             opts.append(v)
         cfg.merge_from_list(opts)
     cfg.freeze()
-    
+
     PersonReID_Dataset_Downloader('./datasets',cfg.DATASETS.NAMES)
     _, _, _, num_classes = data_loader(cfg,cfg.DATASETS.NAMES)
-    
+
     PersonReID_Dataset_Downloader('./datasets',test_dataset)
     _, val_loader, num_query, _ = data_loader(cfg,test_dataset)
-    
+
     re_ranking=cfg.RE_RANKING
-    
+
     if not re_ranking:
         logger = make_logger("Reid_Baseline", cfg.OUTPUT_DIR,
-                             cfg.DATASETS.NAMES+'->'+test_dataset)
+                             cfg.DATASETS.NAMES+'@'+test_dataset)
         logger.info("Test Results:")
     else:
         logger = make_logger("Reid_Baseline", cfg.OUTPUT_DIR,
-                             cfg.DATASETS.NAMES+'->'+test_dataset+'_re-ranking')
-        logger.info("Re-Ranking Test Results:") 
-        
+                             cfg.DATASETS.NAMES+'@'+test_dataset+'_re-ranking')
+        logger.info("Re-Ranking Test Results:")
+
     device = torch.device(cfg.DEVICE)
-    
+
     model = getattr(models, cfg.MODEL.NAME)(num_classes, cfg.MODEL.LAST_STRIDE, cfg.MODEL.POOL)
     model.load(cfg.OUTPUT_DIR,cfg.TEST.LOAD_EPOCH)
     model = model.eval()
-    
+
     all_feats = []
     all_pids = []
     all_camids = []
-    
+
     since = time.time()
     for data in tqdm(val_loader, desc='Feature Extraction', leave=False):
         model.eval()
@@ -66,7 +66,7 @@ def test_cross_dataset(config_file,test_dataset, **kwargs):
             if device:
                 model.to(device)
                 images = images.to(device)
-            
+
             feats = model(images)
 
         all_feats.append(feats)
@@ -78,9 +78,9 @@ def test_cross_dataset(config_file,test_dataset, **kwargs):
     logger.info("mAP: {:.1%}".format(mAP))
     for r in [1, 5, 10]:
         logger.info("CMC curve, Rank-{:<3}:{:.1%}".format(r, cmc[r - 1]))
-       
+
     test_time = time.time() - since
     logger.info('Testing complete in {:.0f}m {:.0f}s'.format(test_time // 60, test_time % 60))
-    
+
 if __name__=='__main__':
     fire.Fire(test_cross_dataset)
