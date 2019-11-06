@@ -105,14 +105,11 @@ venv.bak/
 
 \.DS_Store
 datasets/
-datasets/Market1501/
-datasets/DukeMTMC/
-datasets/CUHK03/
-datasets/MSMT17/
-datasets/NTUIndoor
+
 \.ipynb_checkpoints/
 
-\checkpoint\
+/checkpoint/
+/tests/*/
 
 
 ._.DS_Store

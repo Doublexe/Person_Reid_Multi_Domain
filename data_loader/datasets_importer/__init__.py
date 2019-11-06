@@ -43,5 +43,8 @@ def init_dataset(cfg,dataset_names, merge, *args, **kwargs):
     if len(dataset_names) == 1:
         return __factory[dataset_names[0]](cfg,*args, **kwargs)
     else:
-        datasets = OrderedDict([(name, __factory[name](cfg,*args, **kwargs)) for name in dataset_names])
+        if 'verbose' in kwargs:
+            datasets = OrderedDict([(name, __factory[name](cfg,*args, **kwargs)) for name in dataset_names])
+        else:
+            datasets = OrderedDict([(name, __factory[name](cfg,*args, verbose=False, **kwargs)) for name in dataset_names])
         return Combined(datasets, merge)

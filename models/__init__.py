@@ -10,6 +10,8 @@ from .SE_ResNet152 import SE_ResNet152
 # from .SE_ResNext50_32x4d import SE_ResNext50_32x4d
 # from .SE_ResNext101_32x4d import SE_ResNext101_32x4d
 from .SENet154 import SENet154
+from .ResNet50IFN import ResNet50IFN
+from .ResNet50GFN import ResNet50GFN
 
 from .MGN import MGN
 # from .CAP import CAP
